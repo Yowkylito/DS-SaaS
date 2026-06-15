@@ -27,22 +27,25 @@ jobs:
             platforms;android-34
             build-tools;34.0.0
 
+      - name: Debug - List repo structure
+        run: ls -la && find . -name "gradlew" 2>/dev/null
+
       - name: Accept all Android SDK licenses
         run: yes | sdkmanager --licenses
 
       - name: Make gradlew executable
-        run: chmod +x Android/gradlew
+        run: chmod +x android/gradlew
 
       - name: Gradle clean
-        working-directory: Android
+        working-directory: android
         run: ./gradlew clean
 
       - name: Build Debug APK
-        working-directory: Android
+        working-directory: android
         run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: Android/app/build/outputs/apk/debug/*.apk
+          path: android/app/build/outputs/apk/debug/*.apk
