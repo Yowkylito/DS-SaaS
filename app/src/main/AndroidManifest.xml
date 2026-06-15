@@ -1,0 +1,3 @@
+<manifest package="com.dssaas.app">
+    <application android:label="DS-SaaS" />
+</manifest>
