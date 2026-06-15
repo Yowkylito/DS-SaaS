@@ -1,0 +1,35 @@
+name: Self Writing Repo
+
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: "JSON payload with files to write"
+        required: true
+
+jobs:
+  apply-changes:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Apply JSON changes
+        run: node scripts/apply-patch.js '${{ inputs.payload }}'
+
+      - name: Commit changes
+        run: |
+          git config user.name "auto-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add .
+          git commit -m "Auto update from payload" || echo "No changes"
+          git push
