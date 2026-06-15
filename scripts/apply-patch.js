@@ -6,8 +6,15 @@ const path = require('path');
 // Parse the JSON payload passed as an argument
 const payload = JSON.parse(process.argv[2]);
 
+// Extract files array
+const { files } = payload;
+
+if (!Array.isArray(files)) {
+  throw new Error('Payload must contain a "files" array');
+}
+
 // Apply changes to files
-Object.entries(payload).forEach(([filePath, content]) => {
+files.forEach(({ path: filePath, content }) => {
   const fullPath = path.join(process.cwd(), filePath);
   const dir = path.dirname(fullPath);
   
