@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dropshipping.saas.ui.screens.index.IndexScreen
 
-seal class Route(val route: String) {
+sealed class Route(val route: String) {
     object Index : Route("index")
     object ProductList : Route("products")
     object ProductDetail : Route("product/{id}")
