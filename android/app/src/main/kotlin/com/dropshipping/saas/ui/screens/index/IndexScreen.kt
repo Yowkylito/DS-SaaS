@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IndexScreen(navController: NavController) {
     Scaffold(
