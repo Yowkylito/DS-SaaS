@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       payload:
-        description: "JSON payload with files to write"
+        description: "JSON payload with files + optional scaffold mode"
         required: true
 
 jobs:
@@ -23,13 +23,79 @@ jobs:
         with:
           node-version: 24
 
+      # ---------------------------
+      # 1. APPLY FILES FROM PAYLOAD
+      # ---------------------------
       - name: Apply JSON changes
         run: node scripts/apply-patch.js '${{ inputs.payload }}'
 
+      # ---------------------------
+      # 2. AUTO-FIX ANDROID STRUCTURE
+      # ---------------------------
+      - name: Ensure Android modules exist
+        run: |
+          mkdir -p app
+          mkdir -p domain
+          mkdir -p data
+          mkdir -p core/common
+          mkdir -p core/network
+
+      # ---------------------------
+      # 3. FIX SETTINGS.GRADLE.KTS AUTOMATICALLY
+      # ---------------------------
+      - name: Fix Gradle includes safely
+        run: |
+          cat > settings.gradle.kts << 'EOF'
+          rootProject.name = "DS-SaaS"
+
+          include(":app")
+          include(":domain")
+          include(":data")
+          include(":core:common")
+          include(":core:network")
+          EOF
+
+      # ---------------------------
+      # 4. VALIDATE STRUCTURE BEFORE BUILD
+      # ---------------------------
+      - name: Validate module structure
+        run: |
+          for module in app domain data core/common core/network
+          do
+            if [ ! -d "$module" ]; then
+              echo "Missing module: $module"
+              exit 1
+            fi
+          done
+
+      # ---------------------------
+      # 5. COMMIT GENERATED FILES
+      # ---------------------------
       - name: Commit changes
         run: |
           git config user.name "auto-bot"
           git config user.email "bot@users.noreply.github.com"
           git add .
-          git commit -m "Auto update from payload" || echo "No changes"
+          git commit -m "Auto scaffold + fix modules" || echo "No changes"
           git push
+
+  build:
+    needs: apply-changes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build APK
+        run: ./gradlew assembleDebug
