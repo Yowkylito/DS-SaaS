@@ -30,11 +30,21 @@ jobs:
 
       - name: Make Gradle executable
         working-directory: Android
-        run: chmod +x ./gradlew
+        run: chmod +x gradlew
 
-      - name: Run Gradle Clean
+      - name: Clean project
         working-directory: Android
         run: ./gradlew clean
+
+      - name: Build Debug APK
+        working-directory: Android
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: Android/app/build/outputs/apk/debug/        run: ./gradlew clean
 
       - name: Build Debug APK
         working-directory: Android
