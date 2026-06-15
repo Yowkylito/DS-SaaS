@@ -28,8 +28,8 @@ jobs:
             build-tools;34.0.0
             cmdline-tools;latest
 
-      - name: Accept Android licenses (FIXED)
-        run: yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
+      - name: Accept all Android SDK licenses
+        run: yes | sdkmanager  --licenses
 
       - name: Make gradlew executable
         run: chmod +x Android/gradlew
