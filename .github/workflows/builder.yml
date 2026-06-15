@@ -1,17 +1,16 @@
-name: Android CI
+name: Build Android
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -20,7 +19,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Set up Android SDK
+      - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
           packages: |
@@ -28,13 +27,25 @@ jobs:
             platforms;android-34
             build-tools;34.0.0
 
-      - name: Make Gradle executable
-        working-directory: Android
-        run: chmod +x gradlew
+      - name: Accept SDK licenses
+        run: yes | sdkmanager --licenses
 
-      - name: Clean project
+      - name: Make gradlew executable
+        run: chmod +x Android/gradlew
+
+      - name: Run Gradle Clean
         working-directory: Android
         run: ./gradlew clean
+
+      - name: Build Debug APK
+        working-directory: Android
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: Android/app/build/outputs/apk/debug/*.apk        run: ./gradlew clean
 
       - name: Build Debug APK
         working-directory: Android
