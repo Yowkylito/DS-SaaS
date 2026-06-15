@@ -20,18 +20,15 @@ jobs:
           java-version: 17
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: |
-            platform-tools
-            platforms;android-34
-            build-tools;34.0.0
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
-      - name: Debug - List repo structure
-        run: ls -la && find . -name "gradlew" 2>/dev/null
-
-      - name: Accept all Android SDK licenses
-        run: yes | sdkmanager --licenses
+      - name: Debug - find gradlew
+        run: find . -name "gradlew" 2>/dev/null
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
