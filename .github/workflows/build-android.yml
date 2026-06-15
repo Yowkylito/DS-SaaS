@@ -1,4 +1,6 @@
 name: Android Build
+working-directory: android
+run: ./gradlew assembleDebug
 
 on:
   push:
