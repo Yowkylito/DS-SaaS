@@ -1,8 +1,7 @@
-name: Android CI Build
+name: Android Build
 
 on:
   push:
-    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -13,15 +12,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup JDK
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-          cache: gradle
 
-      - name: Grant execute permission
-        run: chmod +x gradlew
+      - name: Fix gradlew permissions
+        run: chmod +x android/gradlew
 
-      - name: Build Debug
+      - name: Build APK
+        working-directory: android
         run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: android/app/build/outputs/apk/debug/*.apk
