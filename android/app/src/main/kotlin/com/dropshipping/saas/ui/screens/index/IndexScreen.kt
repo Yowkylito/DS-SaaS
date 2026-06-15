@@ -41,7 +41,7 @@ fun IndexScreen(navController: NavController) {
                     onClick = { }
                 )
                 NavigationBarItem(
-                    icon = { Icon(Icons.Default.Trending, contentDescription = "Trends") },
+                    icon = { Icon(Icons.Default.TrendingUp, contentDescription = "Trends") },
                     label = { Text("Trends") },
                     selected = false,
                     onClick = { }
