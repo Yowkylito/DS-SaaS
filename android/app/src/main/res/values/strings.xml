@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DropShipping SaaS</string>
+    <string name="welcome">Welcome</string>
+    <string name="products">Products</string>
+    <string name="trends">Trends</string>
+    <string name="featured_products">Featured Products</string>
+    <string name="browse_all_products">Browse All Products</string>
+    <string name="learn_more">Learn More</string>
+</resources>
